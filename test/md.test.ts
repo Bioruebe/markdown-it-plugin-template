@@ -2,6 +2,7 @@
 
 import MarkdownIt from "markdown-it";
 import { describe, expect, it, test } from "vitest";
+import { html as beautify } from "js-beautify";
 
 import plugin from "../src";
 const mdFiles = import.meta.glob("./**/*.md", { eager: true, as: "raw" });
@@ -73,7 +74,10 @@ function createTestDefinitions() {
  */
 function createTestFunction({ input, output }: TestCase) {
 	return () => {
+		const options = { indent_size: 2 };
 		const parsed = md.render(input).trim();
-		expect(parsed).toEqual(output);
+		const expected = beautify(output, options);
+		const actual = beautify(parsed, options);
+		expect(actual).toEqual(expected);
 	};
 }
